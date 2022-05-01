@@ -58,13 +58,15 @@ p{
     margin: 15px;
     flex-grow: 1.5;
     border-radius: 8px;
-    box-shadow: inset 0px 2.5px 7px 0px rgba(7, 7, 7, 0.7);   
+    box-shadow: inset 0px 2.5px 7px 0px rgba(7, 7, 7, 0.7);  
+    flex-wrap: wrap; 
     }
 
 .display p{
     margin: 0;
     text-align: center; margin: auto;
     font-weight: 500;
+    flex-wrap: wrap; 
 }
 
 .buttons{
