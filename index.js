@@ -1,4 +1,4 @@
-// fucntions
+//++++++++++++++++++++++ functions calculation ++++++++++++++++++++++++
 function add(num1, num2) {
     return num1 + num2;
 }
@@ -32,7 +32,34 @@ function operator(num1, num2, operator) {
     }
 }
 
-console.log(operator(4,2,'+'))
-console.log(operator(4, 2, '-'))
-console.log(operator(2, 4, '*'))
-console.log(operator(4, 2, '/'))
+// console.log(operator(4,2,'+'))
+// console.log(operator(4, 2, '-'))
+// console.log(operator(2, 4, '*'))
+// console.log(operator(4, 2, '/'))
+
+
+//+++++++++++++++++++++++ functions controls ++++++++++++++++++++++++++++++
+function writeToDisplay(btnNum) {
+    console.log(btnNum)
+    STRING_DISPLAY += `${btnNum}`;
+    let display = document.querySelector('.display p');
+    display.textContent = STRING_DISPLAY;
+}
+
+//+++++++++++++++++++++++ general logic +++++++++++++++++++++++++++++++++++
+// Global variable that stores the 'Display' string 
+let STRING_DISPLAY = ''
+
+const btn_7 = document.querySelector('.btn-7');
+btn_7.addEventListener('click',function(){writeToDisplay('7')})
+
+// btn_7.addEventListener('click',() => {
+//     console.log(7);
+//     STRING_DISPLAY += '7';
+//     console.log(STRING_DISPLAY)
+//     let display = document.querySelector('.display p'); 
+//     console.log(display)
+//     //let textDisplay = display.
+//     display.textContent = STRING_DISPLAY;
+
+// }) 
