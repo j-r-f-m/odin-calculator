@@ -1,26 +1,26 @@
 //++++++++++++++++++++++ functions calculation ++++++++++++++++++++++++
 function add(num1, num2) {
+    // addition
     return num1 + num2;
 }
 
 function substract(num1, num2) {
+    // subtraction
     return num1 - num2;
 }
 
 function multiply(num1, num2) {
+    // multiplication
     return num1 * num2;
 }
 
 function divide(num1, num2) {
+    // division
     return num1 / num2;
 }
 
-// console.log(add(4, 2))
-// console.log(substract(2, 4))
-// console.log(multiply(2, 4))
-// console.log(divide(4, 2)
-
 function operator(num1, num2, operator) {
+    // call the right function based on the input operator
     if(operator === '+') {
        return add(num1, num2);
     } else if(operator === '-') {
@@ -32,93 +32,83 @@ function operator(num1, num2, operator) {
     }
 }
 
-function evaluateTerm(term) {
-    console.log(term)
-    let termArray = term.split('');
-    console.log(termArray)
-    operator(parseFloat())
-}
-
-
-// console.log(operator(4,2,'+'))
-// console.log(operator(4, 2, '-'))
-// console.log(operator(2, 4, '*'))
-// console.log(operator(4, 2, '/'))
 
 
 //+++++++++++++++++++++++ functions controls ++++++++++++++++++++++++++++++
 function writeToDisplay(btnInput) {
-    console.log('input btn:' + btnInput)
+    //console.log('input btn:' + btnInput)
+    //console.log(typeof(btnInput))
 
+    //checkInput = parseFloat(btnInput)
+    //console.log(checkInput)
 
-    // String that is shown on Calculator display
-    //STRING_DISPLAY += btnInput;
-    // string that saves the terms
-    CURRENT_TERM += btnInput;
-    console.log('Current Term: ' + CURRENT_TERM)
-    
-    // check if 1st or 2nd term is defined
-    if(CURRENT_TERM.charAt(CURRENT_TERM.length-1) === '+' ||
-       CURRENT_TERM.charAt(CURRENT_TERM.length-1) === '-' ||
-       CURRENT_TERM.charAt(CURRENT_TERM.length-1) === '*' ||
-       CURRENT_TERM.charAt(CURRENT_TERM.length-1) === '/' ){
+    let display = document.querySelector('.display p');
 
-        console.log('lol')
-        // get term
-        let slicedString = CURRENT_TERM.slice(0, -1);
-        // get operation
-        let operation = CURRENT_TERM.slice(-1);
-        console.log('current operator: ' + operation)
-
-        // test
-        console.log('sliced String ' + slicedString)
-        console.log('String Display ' + STRING_DISPLAY);
-        console.log('operators')
-
-        // Array that holds the two values that are supposed to be combined 
-        ARR_VAL.push(slicedString);
-        console.log(ARR_VAL);
-
-        // reset current Term
-        CURRENT_TERM = ''
+    // Ceck if btnInput is a number or an operator
+    if (parseFloat(btnInput)) {
+        // if btnInput is a number save it to current term
+        //console.log('is number');
+        CURRENT_NUMBER_STRING += btnInput;
         
-        /**
-         * if ARR_VAL holds two values call the operator function with the 
-         * corresponding operator
-         */
-        if(ARR_VAL.length == 2) {
-            // evaluate term
-            let evaluation = operator(
-                parseFloat(ARR_VAL[0]), parseFloat(ARR_VAL[1]), operation)
-            console.log(evaluation)
-            // Update global RESULT variable
-            RESULT += evaluation
-            console.log('RESULT: ' + RESULT)    
-            // Reset ARR_VAL    
-            ARR_VAL= [];
+         
+        display.textContent = CURRENT_NUMBER_STRING;
 
-            let display = document.querySelector('.display p');
-            display.textContent = evaluation;
+        console.log('CURRENT_NUMBER_STRING: ' + CURRENT_NUMBER_STRING);
+        console.log('CURRENT_NUMBER_FLOAT: ' + CURRENT_NUMBER_FLOAT);
+    
 
+        
+
+    } else if(btnInput === '=') {
+        // turn string to float in order to call the function
+        CURRENT_NUMBER_FLOAT = parseFloat(CURRENT_NUMBER_STRING);
+
+        if (RESULT === 0) {
+            // if user press '=' as first input
+            display.textContent = RESULT;
+        } else {
+            // evaluate current result do not change state of variables
+            console.log(btnInput);
+            let evaluate = operator(RESULT, CURRENT_NUMBER_FLOAT, OPERATOR_ARRAY[0]);
+            console.log(evaluate);
+            display.textContent = evaluate;
         }
-        STRING_DISPLAY += btnInput;
+        
+    
     } else {
-        STRING_DISPLAY += btnInput;
-        //ARR_STR_DIS.push(btnInput)
+        /**if btnInput is an operator call the operator() function
+         * Save the result to a global variable
+         * clear CURRENT_NUMBER_STRING so that a new number can saves 
+         */
+        // CURRENT_OPERATOR += btnInput;
+        // console.log('CURRENT_OPERATOR: ' + CURRENT_OPERATOR)
 
-        console.log(ARR_VAL)
-        let display = document.querySelector('.display p');
-        display.textContent = STRING_DISPLAY;
+        OPERATOR_ARRAY.push(btnInput);
+        console.log('OPERATOR_ARRAY: ' + OPERATOR_ARRAY);
+
+
+        if (RESULT === 0) {
+            RESULT = parseFloat(CURRENT_NUMBER_STRING);
+            console.log('RESULT: ' + RESULT);
+            CURRENT_NUMBER_STRING = '';
+        } else {
+            CURRENT_NUMBER_FLOAT = parseFloat(CURRENT_NUMBER_STRING);
+            interimResult = operator(RESULT, CURRENT_NUMBER_FLOAT, OPERATOR_ARRAY[0]);
+            RESULT = interimResult;
+            console.log('RESULT: ' + RESULT);
+            display.textContent = RESULT;
+            // Clear CURRENT_NUMBER_STRING
+            CURRENT_NUMBER_STRING = '';
+            CURRENT_NUMBER_FLOAT = 0;
+
+            // Remove first element of array
+            OPERATOR_ARRAY.shift()
+            console.log('Shifted array: ' + OPERATOR_ARRAY)
+        }
+
+        
+
     }
-    
-    
-
-    //let ARR_STR_DIS = STRING_DISPLAY.split('').filter(ele => ele !== ' ')
-    
-
-
-    // display STRING_DISPLAY
-    
 
 
     
@@ -129,12 +119,17 @@ function writeToDisplay(btnInput) {
 //+++++++++++++++++++++++ general logic +++++++++++++++++++++++++++++++++++
 // Global variable that stores the current 'Display' string 
 let STRING_DISPLAY = '';
-// Global variable that saves the different terms  
-let CURRENT_TERM = '';
+// Global variable current number as a string  
+let CURRENT_NUMBER_STRING = '';
+// Global variable that saves the current number as a float
+let CURRENT_NUMBER_FLOAT = 0;
 // Global variable that stores the overall result
 let RESULT = 0;
-// Array that stores the parts of the term that is supposed to be calculated
-let ARR_VAL = [];
+// Current  Operator
+let CURRENT_OPERATOR ='';
+
+// Operator Array
+let OPERATOR_ARRAY = [];
 
 // insert numbers
 const btn_0 = document.querySelector('.btn-0');
@@ -185,7 +180,7 @@ btnPoint.addEventListener('click',function(){writeToDisplay('.')});
 
 // write evalute function
 const btnEvaluate = document.querySelector('.btn-evaluate');
-btnEvaluate.addEventListener('click',function(){evaluateTerm(STRING_DISPLAY)});
+btnEvaluate.addEventListener('click',function(){writeToDisplay('=')});
 
 
 
