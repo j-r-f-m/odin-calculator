@@ -33,78 +33,97 @@ function operator(num1, num2, operator) {
 }
 
 
+function numberString(userInput) {
+    /*The function manipulates the CURRENT_NUMBER_STRING
+     * the CURRENT_NUMBER_STRINGS holds the numbers the user clicks on
+     */
+    CURRENT_NUMBER_STRING += userInput;   
+    display.textContent = CURRENT_NUMBER_STRING;
+}
+
+function evaluate(userInput) {
+    // store operators in array. the array will be updated with the new oprators
+    OPERATOR_ARRAY.push(userInput);
+    console.log('OPERATOR_ARRAY: ' + OPERATOR_ARRAY);
+
+    if (RESULT === 0 && used === false && CURRENT_NUMBER_STRING !=='') {
+        
+        // this case will only be used in the beginning
+        RESULT = parseFloat(CURRENT_NUMBER_STRING);
+        CURRENT_NUMBER_STRING = '';
+        // change state in order to avoid this case
+        used = true;
+
+        //console.log('RESULT: ' + RESULT);
+    } else if(CURRENT_NUMBER_STRING === ''){
+        console.log('LOl')
+        CURRENT_NUMBER_STRING = '0'
+        CURRENT_NUMBER_FLOAT = parseFloat(CURRENT_NUMBER_STRING);
+        interimResult = operator(RESULT, CURRENT_NUMBER_FLOAT, OPERATOR_ARRAY[0]);
+        RESULT = interimResult;
+       
+        display.textContent = RESULT;
+        // Clear CURRENT_NUMBER_STRING
+        CURRENT_NUMBER_STRING = '';
+        CURRENT_NUMBER_FLOAT = 0;
+
+        // Remove first element of array
+        OPERATOR_ARRAY.shift()
+    } else {
+        CURRENT_NUMBER_FLOAT = parseFloat(CURRENT_NUMBER_STRING);
+        interimResult = operator(RESULT, CURRENT_NUMBER_FLOAT, OPERATOR_ARRAY[0]);
+        RESULT = interimResult;
+       
+        display.textContent = RESULT;
+        // Clear CURRENT_NUMBER_STRING
+        CURRENT_NUMBER_STRING = '';
+        CURRENT_NUMBER_FLOAT = 0;
+
+        // Remove first element of array
+        OPERATOR_ARRAY.shift()
+
+        //console.log('RESULT: ' + RESULT);
+        //console.log('Shifted array: ' + OPERATOR_ARRAY)
+    }
+}
+
+function equalSign() {
+    // this function calculates the current result it will not change global
+    // variables
+    // console.log('RESULT Before: ' + RESULT);
+    // console.log('CURRENT_NUMBER_STRING: ' + CURRENT_NUMBER_STRING);
+    // console.log('CURRENT_NUMBER_FLOAT: ' + CURRENT_NUMBER_FLOAT);
+    
+    // convert current Number into a string
+    currentNumberFloat = parseFloat(CURRENT_NUMBER_STRING)
+    interimResult = operator(RESULT, currentNumberFloat, OPERATOR_ARRAY[0]);
+    
+    display.textContent = interimResult;
+    // clear CURRENT_NUMBER_STRING in order to be able to store a new number
+    //CURRENT_NUMBER_STRING = ''
+    
+}
 
 //+++++++++++++++++++++++ functions controls ++++++++++++++++++++++++++++++
 function writeToDisplay(btnInput) {
-    //console.log('input btn:' + btnInput)
-    //console.log(typeof(btnInput))
-
-    //checkInput = parseFloat(btnInput)
-    //console.log(checkInput)
-
-    let display = document.querySelector('.display p');
-
+    /*  The CURRENT_NUMBER_STRING variable will be filled with the numbers the 
+        user clicks until the user clicks on an operator
+        If the user clicks on an operator the operator will be pushed into the 
+        operator array.
+        calculation will be executed
+     */
+    console.log(typeof(btnInput))
+    console.log(parseFloat(btnInput))
     // Ceck if btnInput is a number or an operator
-    if (parseFloat(btnInput)) {
-        // if btnInput is a number save it to current term
-        //console.log('is number');
-        CURRENT_NUMBER_STRING += btnInput;
-        
-         
-        display.textContent = CURRENT_NUMBER_STRING;
+    if (parseFloat(btnInput) || btnInput === '0') {
 
-        console.log('CURRENT_NUMBER_STRING: ' + CURRENT_NUMBER_STRING);
-        console.log('CURRENT_NUMBER_FLOAT: ' + CURRENT_NUMBER_FLOAT);
-    
-
-        
-
-    } else if(btnInput === '=') {
-        // turn string to float in order to call the function
-        CURRENT_NUMBER_FLOAT = parseFloat(CURRENT_NUMBER_STRING);
-
-        if (RESULT === 0) {
-            // if user press '=' as first input
-            display.textContent = RESULT;
-        } else {
-            // evaluate current result do not change state of variables
-            console.log(btnInput);
-            let evaluate = operator(RESULT, CURRENT_NUMBER_FLOAT, OPERATOR_ARRAY[0]);
-            console.log(evaluate);
-            display.textContent = evaluate;
-        }
-        
-    
+        numberString(btnInput);
+        // console.log('CURRENT_NUMBER_STRING: ' + CURRENT_NUMBER_STRING);
+        // console.log('CURRENT_NUMBER_FLOAT: ' + CURRENT_NUMBER_FLOAT);
     } else {
-        /**if btnInput is an operator call the operator() function
-         * Save the result to a global variable
-         * clear CURRENT_NUMBER_STRING so that a new number can saves 
-         */
-        // CURRENT_OPERATOR += btnInput;
-        // console.log('CURRENT_OPERATOR: ' + CURRENT_OPERATOR)
+    
 
-        OPERATOR_ARRAY.push(btnInput);
-        console.log('OPERATOR_ARRAY: ' + OPERATOR_ARRAY);
-
-
-        if (RESULT === 0) {
-            RESULT = parseFloat(CURRENT_NUMBER_STRING);
-            console.log('RESULT: ' + RESULT);
-            CURRENT_NUMBER_STRING = '';
-        } else {
-            CURRENT_NUMBER_FLOAT = parseFloat(CURRENT_NUMBER_STRING);
-            interimResult = operator(RESULT, CURRENT_NUMBER_FLOAT, OPERATOR_ARRAY[0]);
-            RESULT = interimResult;
-            console.log('RESULT: ' + RESULT);
-            display.textContent = RESULT;
-            // Clear CURRENT_NUMBER_STRING
-            CURRENT_NUMBER_STRING = '';
-            CURRENT_NUMBER_FLOAT = 0;
-
-            // Remove first element of array
-            OPERATOR_ARRAY.shift()
-            console.log('Shifted array: ' + OPERATOR_ARRAY)
-        }
+        evaluate(btnInput);
 
         
 
@@ -127,9 +146,13 @@ let CURRENT_NUMBER_FLOAT = 0;
 let RESULT = 0;
 // Current  Operator
 let CURRENT_OPERATOR ='';
-
 // Operator Array
 let OPERATOR_ARRAY = [];
+// state for first use of evaluate() function
+let used = false; 
+
+// select the display of the calculator 
+let display = document.querySelector('.display p');
 
 // insert numbers
 const btn_0 = document.querySelector('.btn-0');
@@ -180,7 +203,7 @@ btnPoint.addEventListener('click',function(){writeToDisplay('.')});
 
 // write evalute function
 const btnEvaluate = document.querySelector('.btn-evaluate');
-btnEvaluate.addEventListener('click',function(){writeToDisplay('=')});
+btnEvaluate.addEventListener('click',function(){equalSign()});
 
 
 
