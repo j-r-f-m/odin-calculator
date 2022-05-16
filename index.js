@@ -39,6 +39,10 @@ function numberString(userInput) {
      */
     CURRENT_NUMBER_STRING += userInput;   
     display.textContent = CURRENT_NUMBER_STRING;
+    console.log('RESULT: ' + RESULT);
+    console.log('CURRENT_NUMBER_STRING: ' + CURRENT_NUMBER_STRING);
+    console.log('CURRENT_NUMBER_FLOAT: ' + CURRENT_NUMBER_FLOAT);
+
 }
 
 function evaluate(userInput) {
@@ -46,16 +50,21 @@ function evaluate(userInput) {
     OPERATOR_ARRAY.push(userInput);
     console.log('OPERATOR_ARRAY: ' + OPERATOR_ARRAY);
 
+    
     if (RESULT === 0 && used === false && CURRENT_NUMBER_STRING !=='') {
+    // this case will only be used in the beginning and after pressing 'CLR' Button    
         
-        // this case will only be used in the beginning
         RESULT = parseFloat(CURRENT_NUMBER_STRING);
         CURRENT_NUMBER_STRING = '';
+        CURRENT_NUMBER_FLOAT = 0;
         // change state in order to avoid this case
         used = true;
 
         //console.log('RESULT: ' + RESULT);
-    } else if(CURRENT_NUMBER_STRING === ''){
+    } else if(CURRENT_NUMBER_STRING === '' && OPERATOR_ARRAY.length === 1){
+        
+        // DOES NOT WORK
+        // if number string is empty and operator string is empty too
         console.log('LOl')
         CURRENT_NUMBER_STRING = '0'
         CURRENT_NUMBER_FLOAT = parseFloat(CURRENT_NUMBER_STRING);
@@ -90,20 +99,35 @@ function evaluate(userInput) {
 function equalSign() {
     // this function calculates the current result it will not change global
     // variables
-    // console.log('RESULT Before: ' + RESULT);
-    // console.log('CURRENT_NUMBER_STRING: ' + CURRENT_NUMBER_STRING);
-    // console.log('CURRENT_NUMBER_FLOAT: ' + CURRENT_NUMBER_FLOAT);
     
-    // convert current Number into a string
+    // convert current_Number_STRING into a float
     currentNumberFloat = parseFloat(CURRENT_NUMBER_STRING)
     interimResult = operator(RESULT, currentNumberFloat, OPERATOR_ARRAY[0]);
     
     display.textContent = interimResult;
-    // clear CURRENT_NUMBER_STRING in order to be able to store a new number
-    //CURRENT_NUMBER_STRING = ''
+  
     
 }
 
+
+function clearAll() {
+    // Clear All data
+    
+    RESULT = 0;
+    CURRENT_NUMBER_STRING = '';
+    CURRENT_NUMBER_FLOAT = 0;
+    display.textContent = RESULT;
+    OPERATOR_ARRAY.length = 0;
+    used = false;
+
+    
+    console.log('CLEAR');
+    console.log('RESULT: ' + RESULT);
+    console.log('CURRENT_NUMBER_STRING: ' + CURRENT_NUMBER_STRING);
+    console.log('CURRENT_NUMBER_FLOAT: ' + CURRENT_NUMBER_FLOAT);
+    console.log('OPERATOR_ARRAY: ' + OPERATOR_ARRAY);
+
+}
 //+++++++++++++++++++++++ functions controls ++++++++++++++++++++++++++++++
 function writeToDisplay(btnInput) {
     /*  The CURRENT_NUMBER_STRING variable will be filled with the numbers the 
@@ -136,8 +160,6 @@ function writeToDisplay(btnInput) {
 
 
 //+++++++++++++++++++++++ general logic +++++++++++++++++++++++++++++++++++
-// Global variable that stores the current 'Display' string 
-let STRING_DISPLAY = '';
 // Global variable current number as a string  
 let CURRENT_NUMBER_STRING = '';
 // Global variable that saves the current number as a float
@@ -205,15 +227,8 @@ btnPoint.addEventListener('click',function(){writeToDisplay('.')});
 const btnEvaluate = document.querySelector('.btn-evaluate');
 btnEvaluate.addEventListener('click',function(){equalSign()});
 
+const btnClear = document.querySelector('.btn-clr');
+btnClear.addEventListener('click',function(){clearAll()});
 
 
-// btn_7.addEventListener('click',() => {
-//     console.log(7);
-//     STRING_DISPLAY += '7';
-//     console.log(STRING_DISPLAY)
-//     let display = document.querySelector('.display p'); 
-//     console.log(display)
-//     //let textDisplay = display.
-//     display.textContent = STRING_DISPLAY;
 
-// }) 
