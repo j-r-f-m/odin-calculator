@@ -52,7 +52,9 @@ function evaluate(userInput) {
 
     
     if (RESULT === 0 && used === false && CURRENT_NUMBER_STRING !=='') {
-    // this case will only be used in the beginning and after pressing 'CLR' Button    
+    // this case will only be used in the beginning and after pressing the 'CLR' 
+    // Button. When the user enters his first number and inputs an operator
+    // the RESULT needs to be updated to the CURRENT_NUMBER_STRING value.     
         
         RESULT = parseFloat(CURRENT_NUMBER_STRING);
         CURRENT_NUMBER_STRING = '';
@@ -61,23 +63,13 @@ function evaluate(userInput) {
         used = true;
 
         //console.log('RESULT: ' + RESULT);
-    } else if(CURRENT_NUMBER_STRING === '' && OPERATOR_ARRAY.length === 1){
-        
-        // DOES NOT WORK
-        // if number string is empty and operator string is empty too
-        console.log('LOl')
-        CURRENT_NUMBER_STRING = '0'
-        CURRENT_NUMBER_FLOAT = parseFloat(CURRENT_NUMBER_STRING);
-        interimResult = operator(RESULT, CURRENT_NUMBER_FLOAT, OPERATOR_ARRAY[0]);
-        RESULT = interimResult;
+    } else if(RESULT === 0 && CURRENT_NUMBER_STRING === '' && OPERATOR_ARRAY.length === 1){
+    // this case is used when user enters an operator without entering a number 
+    // first. it prevents the calculator malfunctioning
+        clearAll();
+        display.textContent = 'Please Start by entering a number';
        
-        display.textContent = RESULT;
-        // Clear CURRENT_NUMBER_STRING
-        CURRENT_NUMBER_STRING = '';
-        CURRENT_NUMBER_FLOAT = 0;
-
-        // Remove first element of array
-        OPERATOR_ARRAY.shift()
+        
     } else {
         CURRENT_NUMBER_FLOAT = parseFloat(CURRENT_NUMBER_STRING);
         interimResult = operator(RESULT, CURRENT_NUMBER_FLOAT, OPERATOR_ARRAY[0]);
@@ -100,11 +92,23 @@ function equalSign() {
     // this function calculates the current result it will not change global
     // variables
     
-    // convert current_Number_STRING into a float
-    currentNumberFloat = parseFloat(CURRENT_NUMBER_STRING)
-    interimResult = operator(RESULT, currentNumberFloat, OPERATOR_ARRAY[0]);
+    if (RESULT === 0 && 
+    // this case is used when user the user presses the equal button first.
+        CURRENT_NUMBER_STRING === '' && 
+        OPERATOR_ARRAY.length === 0) {
+            display.textContent = 'Please Start by entering a number';
+    } else {
+    // this case is used when the user has inputted data and wants to know the 
+    // current RESULT
+
+        // convert current_Number_STRING into a float
+        currentNumberFloat = parseFloat(CURRENT_NUMBER_STRING)
+        interimResult = operator(RESULT, currentNumberFloat, OPERATOR_ARRAY[0]);
+        
+        display.textContent = interimResult;
+    }
+
     
-    display.textContent = interimResult;
   
     
 }
@@ -175,6 +179,7 @@ let used = false;
 
 // select the display of the calculator 
 let display = document.querySelector('.display p');
+display.textContent = 'Please Start by entering a number';
 
 // insert numbers
 const btn_0 = document.querySelector('.btn-0');
@@ -229,6 +234,4 @@ btnEvaluate.addEventListener('click',function(){equalSign()});
 
 const btnClear = document.querySelector('.btn-clr');
 btnClear.addEventListener('click',function(){clearAll()});
-
-
 
