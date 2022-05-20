@@ -16,7 +16,19 @@ function multiply(num1, num2) {
 
 function divide(num1, num2) {
     // division
-    return num1 / num2;
+
+    if(num2 === 0) {
+        RESULT = 0;
+        CURRENT_NUMBER_STRING = '';
+        CURRENT_NUMBER_FLOAT = 0;
+        
+        OPERATOR_ARRAY.length = 0;
+        used = false;
+        return display.textContent = 'Zero Divison ist  not allowed';
+    } else {
+        return num1 / num2;
+    }
+    
 }
 
 function operator(num1, num2, operator) {
@@ -37,21 +49,40 @@ function numberString(userInput) {
     /*The function manipulates the CURRENT_NUMBER_STRING
      * the CURRENT_NUMBER_STRINGS holds the numbers the user clicks on
      */
-    CURRENT_NUMBER_STRING += userInput;   
-    display.textContent = CURRENT_NUMBER_STRING;
-    console.log('RESULT: ' + RESULT);
-    console.log('CURRENT_NUMBER_STRING: ' + CURRENT_NUMBER_STRING);
-    console.log('CURRENT_NUMBER_FLOAT: ' + CURRENT_NUMBER_FLOAT);
+    if(userInput === '.' && !CURRENT_NUMBER_STRING.includes('.')) {
+        CURRENT_NUMBER_STRING += userInput;   
+        display.textContent = CURRENT_NUMBER_STRING;
+    } else if(userInput === '.' && CURRENT_NUMBER_STRING.includes('.')) {
+
+    } else {
+        CURRENT_NUMBER_STRING += userInput;   
+    
+        display.textContent = CURRENT_NUMBER_STRING;
+        console.log('RESULT: ' + RESULT);
+        console.log('CURRENT_NUMBER_STRING: ' + CURRENT_NUMBER_STRING);
+        console.log('CURRENT_NUMBER_FLOAT: ' + CURRENT_NUMBER_FLOAT);
+    }
+    
+    
+    
+    
 
 }
 
 function evaluate(userInput) {
+    // this function handles the input of operators
+    // the arguments passed to this function are operators
+
     // store operators in array. the array will be updated with the new oprators
     OPERATOR_ARRAY.push(userInput);
+     
+    //if (USER_INPUT_HISTORY_ARRAY)
+
     console.log('OPERATOR_ARRAY: ' + OPERATOR_ARRAY);
 
     
-    if (RESULT === 0 && used === false && CURRENT_NUMBER_STRING !=='') {
+    if (RESULT === 0 && used === false && CURRENT_NUMBER_STRING !=='' ||
+        RESULT === 'Zero Divison ist  not allowed' && used === false && CURRENT_NUMBER_STRING !=='') {
     // this case will only be used in the beginning and after pressing the 'CLR' 
     // Button. When the user enters his first number and inputs an operator
     // the RESULT needs to be updated to the CURRENT_NUMBER_STRING value.     
@@ -68,9 +99,15 @@ function evaluate(userInput) {
     // first. it prevents the calculator malfunctioning
         clearAll();
         display.textContent = 'Please Start by entering a number';
-       
+
+    } else if(RESULT !== 0 && CURRENT_NUMBER_STRING ==='' && OPERATOR_ARRAY.length === 2) {
+    // this case???
+    // Remove first element of array
+        OPERATOR_ARRAY.shift()
         
     } else {
+        // this case is the general calculation
+        // 
         CURRENT_NUMBER_FLOAT = parseFloat(CURRENT_NUMBER_STRING);
         interimResult = operator(RESULT, CURRENT_NUMBER_FLOAT, OPERATOR_ARRAY[0]);
         RESULT = interimResult;
@@ -89,7 +126,7 @@ function evaluate(userInput) {
 }
 
 function equalSign() {
-    // this function calculates the current result it will not change global
+    // this function calculates the current result and resets
     // variables
     
     if (RESULT === 0 && 
@@ -97,6 +134,10 @@ function equalSign() {
         CURRENT_NUMBER_STRING === '' && 
         OPERATOR_ARRAY.length === 0) {
             display.textContent = 'Please Start by entering a number';
+
+    } else if(CURRENT_NUMBER_STRING === '' && OPERATOR_ARRAY.length === 1) {
+
+    
     } else {
     // this case is used when the user has inputted data and wants to know the 
     // current RESULT
@@ -105,7 +146,13 @@ function equalSign() {
         currentNumberFloat = parseFloat(CURRENT_NUMBER_STRING)
         interimResult = operator(RESULT, currentNumberFloat, OPERATOR_ARRAY[0]);
         
-        display.textContent = interimResult;
+        display.textContent = interimResult.toPrecision(3);
+        RESULT = 0;
+        CURRENT_NUMBER_STRING = '';
+        CURRENT_NUMBER_FLOAT = 0;
+        OPERATOR_ARRAY.length = 0;
+        used = false;
+
     }
 
     
@@ -142,8 +189,10 @@ function writeToDisplay(btnInput) {
      */
     console.log(typeof(btnInput))
     console.log(parseFloat(btnInput))
+
+    USER_INPUT_HISTORY_ARRAY.push(btnInput);
     // Ceck if btnInput is a number or an operator
-    if (parseFloat(btnInput) || btnInput === '0') {
+    if (parseFloat(btnInput) || btnInput === '0' || btnInput === '.') {
 
         numberString(btnInput);
         // console.log('CURRENT_NUMBER_STRING: ' + CURRENT_NUMBER_STRING);
@@ -174,6 +223,8 @@ let RESULT = 0;
 let CURRENT_OPERATOR ='';
 // Operator Array
 let OPERATOR_ARRAY = [];
+// user input history array, needs to be checked if opeartors a cllicked in a row
+let USER_INPUT_HISTORY_ARRAY = [];
 // state for first use of evaluate() function
 let used = false; 
 
@@ -235,3 +286,6 @@ btnEvaluate.addEventListener('click',function(){equalSign()});
 const btnClear = document.querySelector('.btn-clr');
 btnClear.addEventListener('click',function(){clearAll()});
 
+// Implementation 
+// zero division 
+// FIX following bug: 8 = 
